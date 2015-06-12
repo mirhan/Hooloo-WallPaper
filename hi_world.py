@@ -28,20 +28,45 @@ all_s = u''' 《约定 (Live)》歌词：
 就算你壮阔胸膛 不敌天气 
 两鬓斑白都可认得你'''
 
-comment_s = '''剪影的你轮廓太好看''' 
+comment_s = u'''剪影的你轮廓太好看''' 
 
 def get_pure_string(s):
     re_u = re.findall(ur"[\u4e00-\u9fa5]|[\w']+", s)
     new_s = u""
     for x in re_u:
         new_s = new_s + x
-    return new_s.encode("utf-8")
-
+    return new_s
 
 ###
+def get_longest_common_string(string1, string2):
+    if (len(string1) < len(string2)):
+        tmp = string1
+        string1 = string2
+        string2 = tmp
+
+    string2 = string2 + 'a'
+
+    answer = ""
+    len1, len2 = len(string1), len(string2)
+    for i in range(len1):
+        match = ""
+        for j in range(len2):
+            if (i + j < len1 and string1[i + j] == string2[j]):
+                match += string2[j]
+            else:
+                if (len(match) > len(answer)): 
+                    answer = match
+
+                match = ""
+    return answer
+
 def main():
     a = get_pure_string(all_s)    
-    print a
+    # print "a =", a.encode("utf-8")
+    b = get_pure_string(comment_s)   
+    # print "b =", b.encode("utf-8") 
+    c = get_longest_common_string(a, b)
+    print "c =", c.encode("utf-8") 
 
 
 ###
