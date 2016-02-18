@@ -15,6 +15,9 @@
 #define H_KEY_RIGHT 67
 #define H_KEY_LEFT  68
 
+#define IS_LOSE 3
+#define NOT_LOSE 4
+
 void set_up();
 void wrap_up();
 
@@ -165,29 +168,52 @@ void ball_move(int signum)
         mvaddch(y_cur, x_cur, BLANK);
 //        mvaddch(y_cur, x_cur, BLANK);
         mvaddch(theball.y_pos, theball.x_pos, theball.symbol);
-        bounch_or_lose(&theball);
+        int ret = bounch_or_lose(&theball, &thebaffles);
         move(LINES - 1, COLS - 1);
         refresh();
+        if (ret == IS_LOSE) {
+            printf("         goooooooooodbye.\n");
+            wrap_up();
+            exit(0);
+        }
     }
 }
 
-int bounch_or_lose(struct ppball *bp)
+#define IS_IN_LENGTH(d_pos, d_start, d_length) (d_start <= d_pos && d_pos <= d_start + d_length)
+
+int bounch_or_lose(struct ppball *bp, struct baffles *bafflesp)
 {
-    int ret = 0;
-    if (bp->y_pos == TOP_ROW) {
-        bp->y_dir = 1;
-        ret = 1;
-    } else if (bp->y_pos == BOTTOM_ROW) {
-        bp->y_dir = -1;
-        ret = 1;
+    int ret = NOT_LOSE;
+    if (bp->y_pos == TOP_ROW && bp->y_dir == -1) {
+        if (IS_IN_LENGTH(bp->x_pos, bafflesp->x_baffle_pos, bafflesp->length)) {
+            bp->y_dir = 1;
+            ret = NOT_LOSE;
+        } else {
+            ret = IS_LOSE;
+        }
+    } else if (bp->y_pos == BOTTOM_ROW && bp->y_dir == 1) {
+        if (IS_IN_LENGTH(bp->x_pos, bafflesp->x_baffle_pos, bafflesp->length)) {
+            bp->y_dir = -1;
+            ret = NOT_LOSE;
+        } else {
+            ret = IS_LOSE;
+        }
     }
 
-    if (bp->x_pos == LEFT_EDGE) {
-        bp->x_dir = 1;
-        ret = 1;
-    } else if (bp->x_pos == RIGHT_EDGE) {
-        bp->x_dir = -1;
-        ret = 1;
+    if (bp->x_pos == LEFT_EDGE && bp->x_dir == -1) {
+        if (IS_IN_LENGTH(bp->y_pos, bafflesp->y_baffle_pos, bafflesp->length)) {
+            bp->x_dir = 1;
+            ret = NOT_LOSE;
+        } else {
+            ret = IS_LOSE;
+        }
+    } else if (bp->x_pos == RIGHT_EDGE && bp->x_dir == 1) {
+        if (IS_IN_LENGTH(bp->y_pos, bafflesp->y_baffle_pos, bafflesp->length)) {
+            bp->x_dir = -1;
+            ret = NOT_LOSE;
+        } else {
+            ret = IS_LOSE;
+        }
     }
 
     return ret;
