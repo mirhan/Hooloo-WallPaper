@@ -21,6 +21,8 @@
 #define X_TTM 5
 #define Y_TTM 8
 
+#define BAFFLE_LEN 5
+
 struct ppball
 {
     int y_pos;
@@ -32,6 +34,13 @@ struct ppball
     int x_dir;
     int y_dir;
     char symbol;
+};
+
+struct baffles
+{
+    int length;
+    int x_baffle_pos;
+    int y_baffle_pos;
 };
 
 

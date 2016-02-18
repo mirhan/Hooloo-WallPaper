@@ -15,6 +15,7 @@ void wrap_up();
 void ball_move(int signum);
 
 struct ppball theball;
+struct baffles thebaffles;
 int main()
 {
     set_up();
@@ -40,6 +41,7 @@ int main()
 void set_up()
 {
     void draw_frame();
+    void draw_baffles(struct baffles* pbaffles);
     theball.y_pos = Y_INIT;
     theball.x_pos = X_INIT;
 
@@ -51,19 +53,39 @@ void set_up()
 
     theball.symbol = DEL_SYMBOL;
 
+    thebaffles.length = BAFFLE_LEN;
+    thebaffles.x_baffle_pos = RIGHT_EDGE - (RIGHT_EDGE - LEFT_EDGE) / 2 - BAFFLE_LEN / 2;
+    thebaffles.y_baffle_pos = BOTTOM_ROW - (BOTTOM_ROW - TOP_ROW) / 2 - BAFFLE_LEN / 2;
+
     initscr();
     noecho();
     crmode();
 
-    draw_frame();
-
     signal(SIGINT, SIG_IGN);
+
+//    draw_frame();
+    draw_baffles(&thebaffles);
+
     mvaddch(theball.y_pos, theball.x_pos, theball.symbol);
     refresh();
 
     signal(SIGALRM, ball_move);
 
     set_ticker(1000 / TICKS_PER_SEC);
+}
+
+void draw_baffles(struct baffles* pbaffles)
+{
+    int i;
+    for (i = pbaffles->x_baffle_pos; i < pbaffles->x_baffle_pos + pbaffles->length; i++) {
+        mvaddch(TOP_ROW - 1, i, '-');
+        mvaddch(BOTTOM_ROW + 1, i, '-');
+    }
+
+    for (i = pbaffles->y_baffle_pos; i < pbaffles->y_baffle_pos + pbaffles->length; i++) {
+        mvaddch(i, LEFT_EDGE - 1, '|');
+        mvaddch(i, RIGHT_EDGE + 1, '|');
+    }
 }
 
 void draw_frame()
