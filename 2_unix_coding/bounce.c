@@ -5,6 +5,7 @@
  *      Author: chanhan
  */
 
+#include <stdlib.h>
 #include <curses.h>
 #include <signal.h>
 #include <sys/time.h>
@@ -184,33 +185,17 @@ void ball_move(int signum)
 int bounch_or_lose(struct ppball *bp, struct baffles *bafflesp)
 {
     int ret = NOT_LOSE;
-    if (bp->y_pos == TOP_ROW && bp->y_dir == -1) {
+    if ((bp->y_pos == TOP_ROW && bp->y_dir == -1) || (bp->y_pos == BOTTOM_ROW && bp->y_dir == 1)) {
         if (IS_IN_LENGTH(bp->x_pos, bafflesp->x_baffle_pos, bafflesp->length)) {
-            bp->y_dir = 1;
-            ret = NOT_LOSE;
-        } else {
-            ret = IS_LOSE;
-        }
-    } else if (bp->y_pos == BOTTOM_ROW && bp->y_dir == 1) {
-        if (IS_IN_LENGTH(bp->x_pos, bafflesp->x_baffle_pos, bafflesp->length)) {
-            bp->y_dir = -1;
-            ret = NOT_LOSE;
+            bp->y_dir = -(bp->y_dir);
         } else {
             ret = IS_LOSE;
         }
     }
 
-    if (bp->x_pos == LEFT_EDGE && bp->x_dir == -1) {
+    if ((bp->x_pos == LEFT_EDGE && bp->x_dir == -1) || (bp->x_pos == RIGHT_EDGE && bp->x_dir == 1)) {
         if (IS_IN_LENGTH(bp->y_pos, bafflesp->y_baffle_pos, bafflesp->length)) {
-            bp->x_dir = 1;
-            ret = NOT_LOSE;
-        } else {
-            ret = IS_LOSE;
-        }
-    } else if (bp->x_pos == RIGHT_EDGE && bp->x_dir == 1) {
-        if (IS_IN_LENGTH(bp->y_pos, bafflesp->y_baffle_pos, bafflesp->length)) {
-            bp->x_dir = -1;
-            ret = NOT_LOSE;
+            bp->x_dir = -(bp->x_dir);
         } else {
             ret = IS_LOSE;
         }
