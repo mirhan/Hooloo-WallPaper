@@ -19,6 +19,8 @@
 #define IS_LOSE 3
 #define NOT_LOSE 4
 
+int set_ticker(long n_msecs);
+
 void set_up();
 void wrap_up();
 
@@ -26,6 +28,7 @@ void refresh_draw(int signum);
 void baffle_move(int signum);
 void ball_move(int signum);
 void draw_baffles();
+int bounch_or_lose(struct ppball *bp, struct baffles *bafflesp);
 
 struct ppball theball;
 struct baffles thebaffles;
@@ -65,6 +68,7 @@ int main()
     }
 
     wrap_up();
+    return 0;
 }
 
 void set_up()
