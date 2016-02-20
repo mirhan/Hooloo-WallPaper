@@ -58,8 +58,10 @@ void execute(char *arglist[])
         exit(1);
     } else {
         int exitstatus;
+        signal(SIGINT, SIG_IGN);
         while(wait(&exitstatus) != pid); // try what you think
 
         printf("exitstatus %d, %d\n", exitstatus>>8, exitstatus&0377);
+        signal(SIGINT, SIG_DFL);
     }
 }

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <signal.h>
 #include <stdlib.h>
-#include <termio.h>
+#include <termios.h>
 #include <string.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
